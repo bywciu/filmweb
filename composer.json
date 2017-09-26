@@ -1,0 +1,24 @@
+{
+  "name": "bywciu/filmweb",
+  "type": "library",
+  "description": "filmweb.pl API Bridge",
+  "keywords": ["https", "rest", "web service", "curl"],
+  "homepage": "http://bywciu.com/",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Mateusz Bywalec",
+      "email": "mateusz.bywalec@gmail.com",
+      "homepage": "https://github.com/bywciu"
+    }
+  ],
+  "require": {
+    "php": ">=5.6",
+    "guzzlehttp/guzzle": "^6.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "Bywciu\\Filmweb\\": "src/"
+    }
+  }
+}
