@@ -48,7 +48,7 @@ class FilmReview extends BasicHandler
                 'query' => $this->prepareRequest($methodString)
             ]);
 
-            return $this->mapper($this->parseResponse($clientResponse->getBody()->getContents()));
+            return $this->mapper($this->parseResponse($clientResponse->getBody()->getContents()), $this->responseKeys);
         } catch (\Exception $e) {
             throw new ApiException($e->getMessage());
         }
@@ -58,11 +58,12 @@ class FilmReview extends BasicHandler
      * Map fields with response
      *
      * @param array $response
+     * @param array $fields
      *
      * @return array
-     * @throws \Exception
+     * @throws ApiException
      */
-    public function mapper($response) {
+    public function mapper($response, $fields = []) {
         if (empty($response)) {
             throw new ApiException('No content received', 204);
         }
@@ -71,10 +72,10 @@ class FilmReview extends BasicHandler
         foreach ($response as $i => $item) {
             // authorImagePath
             if ($i === 2 && !empty($item)) {
-                $return[!empty($this->responseKeys[$i]) ? $this->responseKeys[$i] : $i] = $this->assetsUrls['userImageUrl'] . $item;
+                $return[!empty($fields[$i]) ? $fields[$i] : $i] = $this->assetsUrls['userImageUrl'] . $item;
             }
             else {
-                $return[!empty($this->responseKeys[$i]) ? $this->responseKeys[$i] : $i] = $item;
+                $return[!empty($fields[$i]) ? $fields[$i] : $i] = $item;
             }
         }
 

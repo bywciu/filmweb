@@ -70,7 +70,7 @@ class FilmsInfoShort extends BasicHandler
 
             if (!empty($parsedResponse)) {
                 foreach ($parsedResponse as $entry) {
-                    $return[] = $this->mapper($entry);
+                    $return[] = $this->mapper($entry, $this->responseKeys);
                 }
             }
 
@@ -84,11 +84,12 @@ class FilmsInfoShort extends BasicHandler
      * Map fields with response
      *
      * @param array $response
+     * @param array $fields
      *
      * @return array
-     * @throws \Exception
+     * @throws ApiException
      */
-    public function mapper($response) {
+    public function mapper($response, $fields = []) {
         if (empty($response)) {
             throw new ApiException('No content received', 204);
         }
@@ -97,10 +98,10 @@ class FilmsInfoShort extends BasicHandler
         foreach ($response as $i => $item) {
             // imagePath
             if ($i === 5 && !empty($item)) {
-                $return[!empty($this->responseKeys[$i]) ? $this->responseKeys[$i] : $i] = $this->assetsUrls['filmImageUrl'] . $item;
+                $return[!empty($fields[$i]) ? $fields[$i] : $i] = $this->assetsUrls['filmImageUrl'] . $item;
             }
             else {
-                $return[!empty($this->responseKeys[$i]) ? $this->responseKeys[$i] : $i] = $item;
+                $return[!empty($fields[$i]) ? $fields[$i] : $i] = $item;
             }
         }
 
