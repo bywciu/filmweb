@@ -1,5 +1,5 @@
 .idea
-cookies.txt
-composer.lock
 nbproject
+tmp
+!tmp/.gitkeep
 vendor

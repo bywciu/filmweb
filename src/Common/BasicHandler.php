@@ -3,15 +3,20 @@
  * @author Mateusz Bywalec
  * @copyright (c) 2017 bywciu
  * @description filmweb.pl API Bridge
- * @version 1.1
+ * @version 1.1.5
  * @link http://bywciu.com/
  * @link https://github.com/bywciu/filmweb
  * @license MIT
  */
 namespace Bywciu\Filmweb\Common;
 
+use Doctrine\Common\Cache\FilesystemCache;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\FileCookieJar;
+use GuzzleHttp\HandlerStack;
+use Kevinrob\GuzzleCache\CacheMiddleware;
+use Kevinrob\GuzzleCache\Storage\DoctrineCacheStorage;
+use Kevinrob\GuzzleCache\Strategy\PrivateCacheStrategy;
 
 /**
  * Class BasicHandler
@@ -71,18 +76,37 @@ class BasicHandler
      */
     public function __construct()
     {
+		$stack = HandlerStack::create();
+		$stack->push(
+		  new CacheMiddleware(
+			new PrivateCacheStrategy(
+			  new DoctrineCacheStorage(
+				new FilesystemCache(
+					dirname(__FILE__) .
+					DIRECTORY_SEPARATOR . '..' .
+                    DIRECTORY_SEPARATOR . '..' .
+					DIRECTORY_SEPARATOR . 'tmp' .
+					DIRECTORY_SEPARATOR
+				)
+			  )
+			)
+		  ),
+		  'cache'
+		);
+
         $this->client = new Client([
             'base_uri' => $this->apiUrl,
             'cookies' => new FileCookieJar(
                 dirname(__FILE__) .
                 DIRECTORY_SEPARATOR . '..' .
                 DIRECTORY_SEPARATOR . '..' .
-                DIRECTORY_SEPARATOR . '..' .
-                DIRECTORY_SEPARATOR . '..' .
+                DIRECTORY_SEPARATOR . 'tmp' .
                 DIRECTORY_SEPARATOR . 'cookies.txt'),
-            'headers' => [
+            'headers'  => [
+                'content-type' => 'application/json',
                 'Accept' => 'application/json'
-            ]
+            ],
+			'handler' => $stack
         ]);
     }
 

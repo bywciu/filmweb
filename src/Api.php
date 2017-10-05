@@ -3,7 +3,7 @@
  * @author Mateusz Bywalec
  * @copyright (c) 2017 bywciu
  * @description filmweb.pl API Bridge
- * @version 1.1
+ * @version 1.1.5
  * @link http://bywciu.com/
  * @link https://github.com/bywciu/filmweb
  * @license MIT
@@ -168,9 +168,14 @@ class Api
      * @param array $filmIds
      *
      * @return array
+     * @throws ApiException
      */
     public function getFilmsInfoShort(array $filmIds)
     {
+        if (count($filmIds) > 99) {
+            throw new ApiException('Max movies to fetch in one request is 99. The best is 20.');
+        }
+
         $filmsInfoShort = new FilmsInfoShort();
         return $filmsInfoShort->getData($filmIds);
     }
@@ -217,5 +222,15 @@ class Api
 
         $userFilmsWantToSee = new UserFilmsWantToSee();
         return $userFilmsWantToSee->getData($userId, $page, $limit);
+    }
+    
+    /**
+     * Helper methods to fetch some useful data
+     *
+     * @return Helper
+     */
+    public function helper()
+    {
+        return new Helper($this);
     }
 }
